@@ -20,7 +20,7 @@ defmodule PhxAstroNftWeb.Router do
     # get "/", PageController, :home
     live "/", HomeLive.Home, :home
     live "/explore", ExploreLive.Explore, :explore
-
+    live "/nft-detail", NftDetailLive.NftDetail, :details
   end
 
   # Other scopes may use custom stacks.
