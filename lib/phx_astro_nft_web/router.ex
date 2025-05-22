@@ -19,6 +19,7 @@ defmodule PhxAstroNftWeb.Router do
 
     # get "/", PageController, :home
     live "/", HomeLive.Home, :home
+    live "/explore", ExploreLive.Explore, :explore
 
   end
 
