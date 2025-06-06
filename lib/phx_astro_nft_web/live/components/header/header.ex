@@ -1,214 +1,108 @@
 defmodule PhxAstroNftWeb.Components.Header.Header do
   use PhxAstroNftWeb, :live_component
 
-  @impl true
-  def mount(socket) do
-    {:ok, assign(socket, show_search: false)}
-  end
-
-  @impl true
   def render(assigns) do
     ~H"""
-    <header
-      @scroll.window="document.documentElement.classList.toggle('scrolled', window.scrollY > 10)"
-      class="top-0 left-0 fixed w-full z-50 transition duration-300 ease-in-out"
-      class="document.documentElement.classList.contains('scrolled') ? 'bg-white shadow-sticky backdrop-blur-xs' : 'bg-transparent'"
-    >
-      <div class="container">
-        <div class="relative mx-[-16px] flex items-center justify-between">
-          <div class="w-60 max-w-full px-4">
-            <.link
-              navigate={~p"/"}
-              class="header-logo block w-full"
-              class="scrolledFromTop ? 'py-4 lg:py-2' : 'py-5 lg:py-7'"
-            >
-              <img src={~p"/images/logo.svg"} alt="logo" class="h-10 max-w-full" />
-            </.link>
+    <header class="fixed top-0 left-0 right-0 z-50 bg-[#0d0d1a] text-white w-full shadow-md">
+      <div class="flex items-center justify-between px-6 py-4">
+        <!-- Logo -->
+        <div class="flex items-center gap-2">
+          <img src="/images/logo.svg" alt="NFT Logo" class="w-6 h-6" />
+          <span class="text-lg font-bold">NFT</span>
+        </div>
+
+        <!-- Desktop Navigation -->
+        <nav class="hidden md:flex gap-8 items-center text-gray-300">
+          <a href="#" class="hover:text-white transition">Home</a>
+          <a href="#" class="hover:text-white transition">Explore</a>
+          <a href="#" class="hover:text-white transition">Community</a>
+
+          <div class="relative group">
+            <button class="hover:text-white transition flex items-center gap-1">
+              Pages
+              <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.06l3.71-3.83a.75.75 0 111.08 1.04l-4.25 4.38a.75.75 0 01-1.08 0L5.21 8.27a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
+              </svg>
+            </button>
+            <div class="absolute left-0 mt-2 w-40 bg-white text-black rounded-md shadow-lg hidden group-hover:block z-10">
+              <a href="#" class="block px-4 py-2 hover:bg-gray-100">About</a>
+              <a href="#" class="block px-4 py-2 hover:bg-gray-100">FAQ</a>
+            </div>
           </div>
 
-          <div class="flex w-full items-center justify-between px-4">
-            <!-- Mobile Menu Toggle -->
-            <div>
-              <button
-                @click="navbarOpen = !navbarOpen"
-                class="navbarOpen ? 'navbarTogglerActive' : ''"
-                id="navbarToggler"
-                aria-label="navbarToggler"
-                class="absolute right-4 top-1/2 block -translate-y-1/2 rounded-lg px-3 py-[6px] ring-primary focus:ring-2 lg:hidden"
-              >
-                <span
-                  class="relative my-[6px] block h-[2px] w-[30px] bg-white"
-                  class="navbarOpen ? 'transform rotate-45 top-[7px]' : ''"
-                >
-                </span>
-                <span
-                  class="relative my-[6px] block h-[2px] w-[30px] bg-white"
-                  class="navbarOpen ? 'opacity-0' : ''"
-                >
-                </span>
-                <span
-                  class="relative my-[6px] block h-[2px] w-[30px] bg-white"
-                  class="navbarOpen ? 'top-[-8px] rotate-[135deg]' : ''"
-                >
-                </span>
-              </button>
+          <a href="#" class="hover:text-white transition">Support</a>
+        </nav>
 
-    <!-- Navigation -->
-              <nav
-                id="navbarCollapse"
-                class="!navbarOpen ? 'hidden' : ''"
-                class="absolute right-4 top-full w-full max-w-[250px] rounded-lg bg-bg-color shadow-lg lg:static lg:block lg:w-full lg:max-w-full lg:bg-transparent py-3 lg:py-0 lg:px-4 lg:shadow-none xl:px-6"
-              >
-                <ul class="block lg:flex">
-                  <li class="group relative">
-                    <.link
-                      navigate={~p"/"}
-                      class="mx-8 flex py-2 text-base font-semibold text-white group-hover:text-white lg:mr-0 lg:inline-flex lg:py-6 lg:px-0"
-                    >
-                      Home
-                    </.link>
-                  </li>
+        <!-- Desktop Wallet Button -->
+        <div class="hidden md:flex items-center">
+          <button class="border border-white px-4 py-2 rounded-md flex items-center gap-2 hover:bg-white hover:text-black transition">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M20 7H4v10h16V7zM2 6.5A1.5 1.5 0 013.5 5h17A1.5 1.5 0 0122 6.5v11a1.5 1.5 0 01-1.5 1.5h-17A1.5 1.5 0 012 17.5v-11z" />
+              <circle cx="16" cy="12" r="1.5" />
+            </svg>
+            <span>Wallet Connect</span>
+          </button>
+        </div>
 
-                  <li class="group relative">
-                    <.link
-                      navigate={~p"/explore-items"}
-                      class="mx-8 flex py-2 text-base font-semibold text-[#bababa] group-hover:text-white lg:mr-0 lg:ml-8 lg:inline-flex lg:py-6 lg:px-0 xl:ml-12"
-                    >
-                      Explore
-                    </.link>
-                  </li>
+        <!-- Mobile Hamburger -->
+        <button phx-target={@myself} phx-click="toggle_menu" class="md:hidden">
+          <svg :if={!@mobile_menu} xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none"
+               viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M4 6h16M4 12h16M4 18h16"/>
+          </svg>
+          <svg :if={@mobile_menu} xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-purple-400 border border-white rounded-full p-1"
+               fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+        </button>
+      </div>
 
-                  <li class="group relative">
-                    <a
-                      href="https://discord.com/invite/SxNNgXBAQS"
-                      target="_blank"
-                      rel="nofollow"
-                      class="mx-8 flex py-2 text-base font-semibold text-[#bababa] group-hover:text-white lg:mr-0 lg:ml-8 lg:inline-flex lg:py-6 lg:px-0 xl:ml-12"
-                    >
-                      Community
-                    </a>
-                  </li>
-                  <!-- Submenu -->
-                  <li class="group submenu-item relative">
-                    <a
-                      href="#"
-                      @click.prevent="submenuOpen = !submenuOpen"
-                      aria-controls="pages-submenu"
-                      class="relative mx-8 flex py-2 text-base font-semibold text-[#bababa] after:absolute after:right-1 after:top-1/2 after:mt-[-2px] after:h-2 after:w-2 after:translate-y-[-50%] after:rotate-45 after:border-b-2 after:border-r-2 after:border-current group-hover:text-white lg:mr-0 lg:ml-8 lg:inline-flex lg:py-6 lg:pl-0 lg:pr-4 lg:after:right-0 xl:ml-12"
-                    >
-                      Pages
-                    </a>
-
-                    <div
-                      id="pages-submenu"
-                      class="submenuOpen ? 'block' : 'hidden'"
-                      class="submenu relative top-full left-0 w-[250px] rounded-md bg-dark p-4 transition-[top] duration-300 group-hover:opacity-100 lg:invisible lg:absolute lg:top-[110%] lg:block lg:opacity-0 lg:shadow-lg lg:group-hover:visible lg:group-hover:top-full"
-                    >
-                      <.link
-                        navigate={~p"/explore-items"}
-                        class="block rounded-sm py-[10px] px-4 text-sm font-medium text-[#bababa] hover:text-white"
-                      >
-                        Explore Items
-                      </.link>
-
-                      <.link
-                        navigate={~p"/item-details"}
-                        class="block rounded-sm py-[10px] px-4 text-sm font-medium text-[#bababa] hover:text-white"
-                      >
-                        Item Details
-                      </.link>
-
-                      <.link
-                        navigate={~p"/create-item"}
-                        class="block rounded-sm py-[10px] px-4 text-sm font-medium text-[#bababa] hover:text-white"
-                      >
-                        Create Item
-                      </.link>
-
-                      <.link
-                        navigate={~p"/connect-wallet"}
-                        class="block rounded-sm py-[10px] px-4 text-sm font-medium text-[#bababa] hover:text-white"
-                      >
-                        Connect Wallet
-                      </.link>
-
-                      <.link
-                        navigate={~p"/support"}
-                        class="block rounded-sm py-[10px] px-4 text-sm font-medium text-[#bababa] hover:text-white"
-                      >
-                        Support
-                      </.link>
-
-                      <.link
-                        navigate={~p"/signin"}
-                        class="block rounded-sm py-[10px] px-4 text-sm font-medium text-[#bababa] hover:text-white"
-                      >
-                        Sign In
-                      </.link>
-
-                      <.link
-                        navigate={~p"/signup"}
-                        class="block rounded-sm py-[10px] px-4 text-sm font-medium text-[#bababa] hover:text-white"
-                      >
-                        Sign Up
-                      </.link>
-                    </div>
-                  </li>
-
-                  <li class="group relative">
-                    <.link
-                      navigate={~p"/support"}
-                      class="mx-8 flex py-2 text-base font-semibold text-[#bababa] group-hover:text-white lg:mr-0 lg:ml-8 lg:inline-flex lg:py-6 lg:px-0 xl:ml-12"
-                    >
-                      Support
-                    </.link>
-                  </li>
-                </ul>
-              </nav>
-            </div>
-
-    <!-- Right Side (Search & Wallet) -->
-            <div class="hidden justify-end pr-16 sm:flex lg:pr-0">
-              <!-- Search -->
-              <div class="group relative hidden md:flex">
-                <button
-                  class="py-3 px-7 text-base font-semibold text-body-color transition hover:text-primary lg:px-4 xl:px-7"
-                  aria-label="search"
-                >
-                  <%!-- <Heroicons.magnifying_glass solid class="h-6 w-6 text-white" /> --%>
-                </button>
-
-                <div class="invisible absolute top-[110%] right-0 w-[250px] rounded-md bg-dark p-3 opacity-0 transition-all group-hover:visible group-hover:top-full group-hover:opacity-100">
-                  <form class="flex">
-                    <input
-                      type="text"
-                      placeholder="Search here..."
-                      class="w-full bg-transparent py-2 px-4 text-white outline-none"
-                    />
-                    <button class="text-white" aria-label="search-button">
-                      <%!-- <Heroicons.magnifying_glass solid class="h-6 w-6" /> --%>
-                    </button>
-                  </form>
-                </div>
-              </div>
-
-    <!-- Wallet Connect -->
-              <.link
-                navigate={~p"/connect-wallet"}
-                class="flex items-center rounded-md border-2 border-white py-3 px-6 text-base font-semibold text-white transition duration-300 ease-in-out hover:border-primary hover:bg-primary lg:px-4 xl:px-6"
-              >
-                <span class="pr-2">
-                  <%!-- <WalletIcon /> --%>
-                </span>
-                Wallet Connect
-              </.link>
-            </div>
+      <!-- Mobile Menu -->
+      <div :if={@mobile_menu} class="md:hidden bg-[#18182f] text-white px-6 py-4 space-y-3">
+        <a href="#" class="block hover:text-purple-300">Home</a>
+        <a href="#" class="block hover:text-purple-300">Explore</a>
+        <a href="#" class="block hover:text-purple-300">Community</a>
+        <div>
+          <button class="flex items-center gap-2 hover:text-purple-300" phx-target={@myself} phx-click="toggle_dropdown">
+            Pages
+            <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.06l3.71-3.83a.75.75 0 111.08 1.04l-4.25 4.38a.75.75 0 01-1.08 0L5.21 8.27a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
+            </svg>
+          </button>
+          <div :if={@dropdown_open} class="ml-4 mt-1 space-y-1 text-sm">
+            <a href="#" class="block hover:text-purple-300">About</a>
+            <a href="#" class="block hover:text-purple-300">FAQ</a>
           </div>
         </div>
+        <a href="#" class="block hover:text-purple-300">Support</a>
+        <button class="mt-4 border border-white px-4 py-2 rounded-md flex items-center gap-2 hover:bg-white hover:text-black transition w-full justify-center">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M20 7H4v10h16V7zM2 6.5A1.5 1.5 0 013.5 5h17A1.5 1.5 0 0122 6.5v11a1.5 1.5 0 01-1.5 1.5h-17A1.5 1.5 0 012 17.5v-11z" />
+            <circle cx="16" cy="12" r="1.5" />
+          </svg>
+          <span>Wallet Connect</span>
+        </button>
       </div>
     </header>
     """
   end
 
+  def update(assigns, socket) do
+    socket =
+      socket
+      |> assign_new(:mobile_menu, fn -> false end)
+      |> assign_new(:dropdown_open, fn -> false end)
 
+    {:ok, assign(socket, assigns)}
+  end
+
+  def handle_event("toggle_menu", _, socket) do
+    {:noreply, update(socket, :mobile_menu, &(!&1))}
+  end
+
+  def handle_event("toggle_dropdown", _, socket) do
+    {:noreply, update(socket, :dropdown_open, &(!&1))}
+  end
 end
