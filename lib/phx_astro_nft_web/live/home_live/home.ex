@@ -3,6 +3,10 @@ defmodule PhxAstroNftWeb.HomeLive.Home do
 
   def render(assigns) do
     ~H"""
+
+     <.live_component module={PhxAstroNftWeb.Components.Header.Header} id={:header_section}>
+    </.live_component>
+
     <!-- ==== Hero Section Start ==== -->
     <.live_component module={PhxAstroNftWeb.Components.Home.HeroSection} id={:hero_section}>
     </.live_component>
